@@ -4,5 +4,6 @@ output "api_endpoint" {
 }
 
 output "api_gateway_endpoint" {
-  value = "https://${aws_api_gateway_rest_api.resume_api.id}.execute-api.${region}.amazonaws.com/${aws_api_gateway_stage.resume_stage.stage_name}/${aws_api_gateway_resource.my_resource.path_part}"
+  value = "${aws_api_gateway_stage.api_gateway_stage.invoke_url}/"
+  # "https://${aws_api_gateway_rest_api.resume_api.id}.execute-api.${region}.amazonaws.com/${aws_api_gateway_stage.resume_stage.stage_name}/${aws_api_gateway_resource.resumeResource.path_part}"
 }
