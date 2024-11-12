@@ -6,9 +6,9 @@ terraform {
     }
   }
   cloud {
-    organization = "ExamPro"
+    organization = "Cloud_Resume_API"
     workspaces {
-      name = "terra-house-1"
+      name = "API_Resume"
     }
   }
 }

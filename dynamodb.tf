@@ -12,7 +12,7 @@ resource "aws_dynamodb_table" "resume-table" {
   }
 }
 
-resource "aws_dynamodb_table_item" "1" {
+resource "aws_dynamodb_table_item" "first_one" {
   table_name = aws_dynamodb_table.resume-table.name
   hash_key   = aws_dynamodb_table.resume-table.hash_key
 
