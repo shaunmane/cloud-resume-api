@@ -4,5 +4,5 @@ output "api_endpoint" {
 }
 
 output "api_gateway_endpoint" {
-  value = "https://${aws_api_gateway_rest_api.resume_api.id}.execute-api.${var.region}.amazonaws.com/${aws_api_gateway_stage.resume_stage.stage_name}/${aws_api_gateway_resource.my_resource.path_part}"
+  value = "https://${aws_api_gateway_rest_api.resume_api.id}.execute-api.${region}.amazonaws.com/${aws_api_gateway_stage.resume_stage.stage_name}/${aws_api_gateway_resource.my_resource.path_part}"
 }
