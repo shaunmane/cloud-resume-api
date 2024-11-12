@@ -12,12 +12,6 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
 
-      - name: Install AWS CLI
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
-
       - name: Set AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with: 
@@ -26,6 +20,7 @@ jobs:
           AWS_REGION: us-east-1
     
   terraform:
+    needs: aws 
     runs-on: ubuntu-latest
     
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
@@ -40,7 +35,7 @@ jobs:
       - name: HashiCorp - Setup Terraform
         uses: hashicorp/setup-terraform@v3.1.2
         with:
-          TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
                
       - name: Initialize Terraform
         run: terraform init
