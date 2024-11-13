@@ -14,19 +14,43 @@ terraform {
 }
 
 # Cloud Provider
-#provider "aws" {
-#  region     = "us-east-1"
-#}
-data "aws_caller_identity" "current" {}
+provider "aws" {
+  region     = "us-east-1"
+}
 
-# IAM role with all required permissions
-resource "aws_iam_role" "resume_role" {
-  name = "resume_role"
+# IAM role with lambda required permissions
+resource "aws_iam_role" "lambda_role" {
+  name = "role for lambda resume"
 
   assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "AllowAssumeRole",
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Principal": {
+            "Service": [
+                "lambda.amazonaws.com",
+                "dynamodb.amazonaws.com"
+            ]
+        }
+      }
+    ]
+  }   
+}
+
+# Policy for running lambda
+resource "aws_iam_policy" "execution_policy" {
+  name         = "aws_iam_policy_for_terraform_aws_lambda_role"
+  path         = "/"
+  description  = "AWS IAM Policy for managing aws lambda role"
+  policy = <<EOF
+    {
     "Version" : "2012-10-17",
     "Statement" : [
       {
+        "Sid": "AllowLambda",
         "Effect" : "Allow",
         "Action" : [
           "lambda:InvokeFunction"
@@ -34,34 +58,51 @@ resource "aws_iam_role" "resume_role" {
         "Resource" : "arn:aws:lambda:*:*:function:*"
       },
       {
+        "Sid": "AllowDynamoDB",
         "Effect" : "Allow",
         "Action" : [
+          "dynamodb:PutItem",
           "dynamodb:GetItem",
+          "dynamodb:UpdateItem",
           "dynamodb:Query",
           "dynamodb:Scan"
         ],
         "Resource" : "arn:aws:dynamodb:*:*:table/*"
       },
       {
+        "Sid": "AllowCloudWatch",
         "Effect" : "Allow",
         "Action" : [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ],
-        "Resource" : "arn:aws:logs:*:*:log-group:/aws/lambda/*"
+        "Resource" : "arn:aws:logs:*:*:*"
       }
     ]
-  })
+  }
+  EOF
+}
+
+# Attach policy to role
+resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {
+  role        = aws_iam_role.lambda_role.name
+  policy_arn  = aws_iam_policy.execution_policy.arn
 }
 
 # Upload the Lambda function
 resource "aws_lambda_function" "create_function" {
-  filename      = "./src/lambda_function.zip" # Path to the Lambda function ZIPPED file
+  filename      = "${path.module}/src/lambda_function.zip" # Path to the Lambda function ZIPPED file
   function_name = "lambda_function"
-  role          = aws_iam_role.resume_role.arn
+  role          = aws_iam_role.lambda_role.arn
   handler       = "index.lambda_handler"
   runtime       = "python3.12"
+}
+
+# Cloud watch log group for lambda
+resource "aws_cloudwatch_log_group" "lambda_log_group" {
+  name              = "/aws/lambda/create_function"
+  retention_in_days = 14
 }
 
 # Create a REST API in API Gateway
@@ -111,7 +152,6 @@ resource "aws_lambda_permission" "apigw_lambda" {
 resource "aws_api_gateway_deployment" "api_deploy" {
   depends_on  = [aws_api_gateway_integration.integration]
   rest_api_id = aws_api_gateway_rest_api.resume_api.id
-
 
   lifecycle {
     create_before_destroy = true
