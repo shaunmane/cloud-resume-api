@@ -27,12 +27,6 @@ jobs:
         uses: hashicorp/setup-terraform@v3.1.2
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-        
-      - name: Cache
-        uses: actions/cache@v4.1.2
-        with: 
-          path: |
-            ~/.terraform.lock.hcl
        
       - name: Set Envars
         run: |
