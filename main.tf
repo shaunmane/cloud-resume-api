@@ -1,23 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "5.75.0"
-    }
-  }
-  cloud {
-    organization = "Cloud_Resume_API"
-    workspaces {
-      name = "API_Resume"
-    }
-  }
-}
-
-# Cloud Provider
-provider "aws" {
-  region     = "us-east-1"
-}
-
 # IAM role with lambda required permissions
 resource "aws_iam_role" "lambda_role" {
   name = "role for lambda resume"
@@ -30,14 +10,14 @@ resource "aws_iam_role" "lambda_role" {
         "Effect": "Allow",
         "Action": "sts:AssumeRole",
         "Principal": {
-            "Service": [
-                "lambda.amazonaws.com",
-                "dynamodb.amazonaws.com"
-            ]
+          "Service": [
+            "lambda.amazonaws.com",
+            "dynamodb.amazonaws.com"
+          ]
         }
       }
     ]
-  }   
+  })   
 }
 
 # Policy for running lambda
