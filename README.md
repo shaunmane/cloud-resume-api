@@ -19,7 +19,7 @@ A serverless API (that serves resume data in JSON format) using AWS Lambda and D
 ## API Resume Link
 
 ```
-curl https://
+curl https://292djl6bck.execute-api.us-east-1.amazonaws.com/prod/myresumeresource 
 ```
 
 ## MIT License

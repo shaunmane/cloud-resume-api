@@ -8,25 +8,6 @@ table = dynamodb.Table('Resumes')
 
 def dynamodb_to_json(dynamodb_data):
     """
-    Recursively converts DynamoDB JSON format to normal JSON.
-    if isinstance(dynamodb_data, dict):
-        # Check if the data contains the DynamoDB types and handle them accordingly
-        if 'S' in dynamodb_data:
-            return dynamodb_data['S']
-        elif 'M' in dynamodb_data:
-            # Recursively process the map
-            return {key: dynamodb_to_json(value) for key, value in dynamodb_data['M'].items()}
-        elif 'L' in dynamodb_data:
-            # Recursively process the list
-            return [dynamodb_to_json(item) for item in dynamodb_data['L']]
-        else:
-            # If no recognized format, return the data as is
-            return dynamodb_data
-    else:
-        # If it's not a dictionary, return the value directly (e.g., a string, number, etc.)
-        return dynamodb_data
-    """
-    """
     Convert a JSON schema with type information (S, M, L) to normal JSON format,
     excluding the 'id' field and preserving the order of items.
     """

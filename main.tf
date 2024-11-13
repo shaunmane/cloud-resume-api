@@ -1,31 +1,31 @@
 # IAM role with lambda required permissions
 resource "aws_iam_role" "lambda_role" {
-  name = "role for lambda resume"
+  name = "lambda_role"
 
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Sid": "AllowAssumeRole",
-        "Effect": "Allow",
-        "Action": "sts:AssumeRole",
-        "Principal": {
-          "Service": [
+        "Sid" : "AllowAssumeRole",
+        "Effect" : "Allow",
+        "Action" : "sts:AssumeRole",
+        "Principal" : {
+          "Service" : [
             "lambda.amazonaws.com",
             "dynamodb.amazonaws.com"
           ]
         }
       }
     ]
-  })   
+  })
 }
 
 # Policy for running lambda
 resource "aws_iam_policy" "execution_policy" {
-  name         = "aws_iam_policy_for_terraform_aws_lambda_role"
-  path         = "/"
-  description  = "AWS IAM Policy for managing aws lambda role"
-  policy = <<EOF
+  name        = "aws_iam_policy_for_terraform_aws_lambda_role"
+  path        = "/"
+  description = "AWS IAM Policy for managing aws lambda role"
+  policy      = <<EOF
     {
     "Version" : "2012-10-17",
     "Statement" : [
@@ -66,8 +66,8 @@ resource "aws_iam_policy" "execution_policy" {
 
 # Attach policy to role
 resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {
-  role        = aws_iam_role.lambda_role.name
-  policy_arn  = aws_iam_policy.execution_policy.arn
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.execution_policy.arn
 }
 
 # Upload the Lambda function
@@ -75,7 +75,7 @@ resource "aws_lambda_function" "create_function" {
   filename      = "${path.module}/src/lambda_function.zip" # Path to the Lambda function ZIPPED file
   function_name = "lambda_function"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "index.lambda_handler"
+  handler       = "lambda_function.lambda_handler"
   runtime       = "python3.12"
 }
 
@@ -142,6 +142,6 @@ resource "aws_api_gateway_deployment" "api_deploy" {
 resource "aws_api_gateway_stage" "resume_stage" {
   deployment_id = aws_api_gateway_deployment.api_deploy.id
   rest_api_id   = aws_api_gateway_rest_api.resume_api.id
-  stage_name    = "resume_stage"
+  stage_name    = "prod"
 }
 
