@@ -38,7 +38,7 @@ jobs:
         working-directory: . # Set this to the directory where your Terraform files are located
 
       - name: Validate Terraform
-        run: terraform Validate
+        run: terraform validate
         working-directory: . 
 
       - name: Apply Terraform
