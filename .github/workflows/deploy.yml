@@ -46,6 +46,10 @@ jobs:
         run: terraform init
         working-directory: . # Set this to the directory where your Terraform files are located
 
+      - name: Plan Terraform
+        run: terraform plan
+        working-directory: . 
+
       - name: Apply Terraform
         run: terraform apply -auto-approve
         working-directory: . # Set this to the directory where your Terraform files are located
