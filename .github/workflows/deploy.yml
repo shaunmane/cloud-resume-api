@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read 
+  actions: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -41,6 +45,10 @@ jobs:
       - name: Validate Terraform
         run: terraform validate
         working-directory: . 
+
+      - name: Set Terraform Debug Log
+        run: |
+          echo "TF_LOG=DEBUG" >> $GITHUB_ENV
 
       - name: Apply Terraform
         run: terraform apply -auto-approve
