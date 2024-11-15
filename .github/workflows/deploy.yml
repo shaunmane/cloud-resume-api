@@ -60,4 +60,4 @@ jobs:
 
       - name: Output API URL
         run: |
-          terraform output api_url
+          terraform output api_gateway_endpoint
