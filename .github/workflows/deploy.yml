@@ -11,7 +11,6 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
@@ -34,32 +33,31 @@ jobs:
        
       - name: Set Envars
         run: |
-          export TF_VAR_aws_access_key="${{ secrets.AWS_ACCESS_KEY_ID }}"
-          export TF_VAR_aws_secret_access_key="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-          export TF_VAR_aws_region="us-east-1"
+          echo "TF_VAR_aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          echo "TF_VAR_aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "TF_VAR_aws_region=us-east-1" >> $GITHUB_ENV
                
+      - name: Set Terraform Debug Log
+        run: echo "TF_LOG=DEBUG" >> $GITHUB_ENV
+
       - name: Initialize Terraform
         run: terraform init
-        working-directory: . # Set this to the directory where your Terraform files are located
-      
-      - name: Debug environment variables
-        run: |
-          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}"
-          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-          echo "AWS_REGION=${{ secrets.AWS_REGION }}"
-      
+        working-directory: . 
+
       - name: Validate Terraform
         run: terraform validate
         working-directory: . 
 
-      - name: Set Terraform Debug Log
+      - name: Debug environment variables
         run: |
-          echo "TF_LOG=DEBUG" >> $GITHUB_ENV
+          echo "AWS_ACCESS_KEY_ID is set: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}"
+          echo "AWS_SECRET_ACCESS_KEY is set: ${{ secrets.AWS_SECRET_ACCESS_KEY != '' }}"
+          echo "AWS_REGION is set: ${{ secrets.AWS_REGION != '' }}"
 
       - name: Apply Terraform
         run: terraform apply -auto-approve
-        working-directory: . # Set this to the directory where your Terraform files are located
-      
+        working-directory: . 
+
       - name: Output API URL
         run: |
-          terraform output
+          terraform output api_url
