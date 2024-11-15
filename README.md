@@ -1,6 +1,6 @@
 # Cloud Resume API Challenge with AWS
 
-[![Deploy to lambda](https://github.com/shaunmane/cloud-resume-api/actions/workflows/deploy.yml/badge.svg)](https://github.com/shaunmane/cloud-resume-api/actions/workflows/deploy.yml)
+[![Deploy to lambda](https://github.com/shaunmane/cloud-resume-api/actions/workflows/deploy.yml/badge.svg)](https://github.com/shaunmane/cloud-resume-api/actions/runs/11858837599)
 
 A serverless API (that serves resume data in JSON format) using AWS Lambda and DynamoDB, integrated with GitHub Actions.
 
@@ -19,7 +19,7 @@ A serverless API (that serves resume data in JSON format) using AWS Lambda and D
 ## API Resume Link
 
 ```
-curl https://292djl6bck.execute-api.us-east-1.amazonaws.com/prod/myresumeresource 
+curl https://nq6qjcfyfh.execute-api.us-east-1.amazonaws.com/prod/myresumeresource 
 ```
 
 ## MIT License
